@@ -32,6 +32,9 @@ PROXY(StringFunctions) {
   DECLARE_METHOD(CompareStrings);
   DECLARE_METHOD(WriteString);
   DECLARE_METHOD(InputString);
+  DECLARE_METHOD(Upper);
+  DECLARE_METHOD(Lower);
+  DECLARE_METHOD(Concat);
 };
 
 PROXY(StrWithLen) {

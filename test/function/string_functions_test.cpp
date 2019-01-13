@@ -72,6 +72,7 @@ TEST_F(StringFunctionsTests, LikeTest) {
       GetExecutorContext(), s4.c_str(), s4.size(), p4.c_str(), p4.size()));
 }
 
+
 TEST_F(StringFunctionsTests, AsciiTest) {
   const char column_char = 'A';
   for (int i = 0; i < 52; i++) {
@@ -347,6 +348,33 @@ TEST_F(StringFunctionsTests, CodegenSubstrTest) {
                                           message.length(), from, len);
   EXPECT_EQ(0, res.length);
   EXPECT_EQ(nullptr, res.str);
+}
+
+TEST_F(StringFunctionsTests, UpperTest) {
+  const std::string s = "AbCd";
+  const std::string es = "ABCD";
+  char * v = function::StringFunctions::Upper(GetExecutorContext(), s.c_str(), s.length());
+  EXPECT_EQ(es, std::string(v));
+}
+
+TEST_F(StringFunctionsTests, LowerTest) {
+  const std::string s = "AbCd";
+  const std::string es = "abcd";
+  char * v = function::StringFunctions::Lower(GetExecutorContext(), s.c_str(), s.length());
+  EXPECT_EQ(es, std::string(v));
+}
+
+TEST_F(StringFunctionsTests, ConcatTest) {
+  const char *ss[] = {
+    "123",
+    "4567"
+  };
+  const uint32_t ll[] = {3, 4};
+  const std::string ee = "1234567";
+  const uint32_t el = 7;
+  auto v = function::StringFunctions::Concat(GetExecutorContext(), ss, ll, 2);
+  EXPECT_EQ(el, v.length);
+  EXPECT_EQ(ee, std::string(v.str, v.length));
 }
 
 }  // namespace test

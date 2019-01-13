@@ -85,6 +85,12 @@ class StringFunctions {
   static uint32_t Length(executor::ExecutorContext &ctx, const char *str,
                          uint32_t length);
 
+  // make string upper
+  static char* Upper(executor::ExecutorContext &ctx, const char *t, uint32_t tlen);
+  static char* Lower(executor::ExecutorContext &ctx, const char *t, uint32_t tlen);
+
+  static StringFunctions::StrWithLen Concat(executor::ExecutorContext &ctx, const char **concat_strs, const uint32_t *str_lens, const uint32_t len);
+
   /**
    * Compare two (potentially empty) strings returning an integer value
    * indicating their sort order.

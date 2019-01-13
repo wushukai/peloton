@@ -16,6 +16,7 @@
 #include "executor/executor_context.h"
 #include "type/type_util.h"
 #include "type/abstract_pool.h"
+#include <ctype.h>
 
 namespace peloton {
 namespace function {
@@ -183,6 +184,43 @@ StringFunctions::StrWithLen StringFunctions::Trim(
     UNUSED_ATTRIBUTE executor::ExecutorContext &ctx, const char *str,
     uint32_t str_len) {
   return BTrim(ctx, str, str_len, " ", 2);
+}
+
+char* StringFunctions::Upper(executor::ExecutorContext &ctx, const char *t, uint32_t tlen) {
+  uint32_t char_len = tlen + 1;
+  auto *pool = ctx.GetPool();
+  auto *r = reinterpret_cast<char *>(pool->Allocate(char_len));
+  for (uint32_t i = 0; i < tlen; i++) {
+    r[i] = static_cast<char>(toupper(static_cast<unsigned char>(t[i])));
+  }
+  r[tlen] = '\0';
+  return r;
+}
+
+char* StringFunctions::Lower(executor::ExecutorContext &ctx, const char *t, uint32_t tlen) {
+  uint32_t char_len = tlen + 1;
+  auto *pool = ctx.GetPool();
+  auto *r = reinterpret_cast<char *>(pool->Allocate(char_len));
+  for (uint32_t i = 0; i < tlen; i++) {
+    r[i] = static_cast<char>(tolower(static_cast<unsigned char>(t[i])));
+  }
+  r[tlen] = '\0';
+  return r;
+}
+
+StringFunctions::StrWithLen StringFunctions::Concat(executor::ExecutorContext &ctx, const char **concat_strs, const uint32_t* str_lens, const uint32_t len) {
+  uint32_t total_len = 0;
+  for (uint32_t i = 0; i < len; i++) {
+    total_len += str_lens[i];
+  }
+  auto *pool = ctx.GetPool();
+  auto *r = reinterpret_cast<char *>(pool->Allocate(total_len));
+  auto offset = 0;
+  for (uint32_t i = 0; i < len; i++) {
+    PELOTON_MEMCPY(r + offset, concat_strs[i], str_lens[i]);
+    offset += str_lens[i];
+  }
+  return StringFunctions::StrWithLen{static_cast<const char*>(r), total_len};
 }
 
 StringFunctions::StrWithLen StringFunctions::BTrim(
